@@ -1,4 +1,4 @@
-d3.parcoords = function (config) {
+d3v3.parcoords = function (config) {
   var __ = {
     data: [],
     highlighted: [],
@@ -35,7 +35,7 @@ d3.parcoords = function (config) {
     console.warn(
       "dimensionTitles passed in config is deprecated. Add title to dimension object."
     );
-    d3.entries(config.dimensionTitles).forEach(function (d) {
+    d3v3.entries(config.dimensionTitles).forEach(function (d) {
       if (__.dimensions[d.key]) {
         __.dimensions[d.key].title = __.dimensions[d.key].title
           ? __.dimensions[d.key].title
@@ -49,7 +49,7 @@ d3.parcoords = function (config) {
   }
 
   var pc = function (selection) {
-    selection = pc.selection = d3.select(selection);
+    selection = pc.selection = d3v3.select(selection);
 
     __.width = selection[0][0].clientWidth;
     __.height = selection[0][0].clientHeight - 20;
@@ -80,7 +80,7 @@ d3.parcoords = function (config) {
     return pc;
   };
 
-  var events = d3.dispatch.apply(
+  var events = d3v3.dispatch.apply(
       this,
       [
         "render",
@@ -90,7 +90,7 @@ d3.parcoords = function (config) {
         "brushend",
         "brushstart",
         "axesreorder",
-      ].concat(d3.keys(__))
+      ].concat(d3v3.keys(__))
     ),
     w = function () {
       return __.width - __.margin.right - __.margin.left;
@@ -105,18 +105,18 @@ d3.parcoords = function (config) {
       interactive: false,
       debug: false,
     },
-    xscale = d3.scale.ordinal(),
+    xscale = d3v3.scale.ordinal(),
     dragging = {},
-    line = d3.svg.line(),
-    axis = d3.svg.axis().orient("left").ticks(5),
+    line = d3v3.svg.line(),
+    axis = d3v3.svg.axis().orient("left").ticks(5),
     g, // groups for axes, brushes
     ctx = {},
     canvas = {},
     clusterCentroids = [];
 
   // side effects for setters
-  var side_effects = d3.dispatch
-    .apply(this, d3.keys(__))
+  var side_effects = d3v3.dispatch
+    .apply(this, d3v3.keys(__))
     .on("composite", function (d) {
       ctx.foreground.globalCompositeOperation = d.value;
       ctx.brushed.globalCompositeOperation = d.value;
@@ -143,16 +143,16 @@ d3.parcoords = function (config) {
     })
     .on("dimensions", function (d) {
       // console.log("called")
-      __.dimensions = pc.applyDimensionDefaults(d3.keys(d.value));
+      __.dimensions = pc.applyDimensionDefaults(d3v3.keys(d.value));
       xscale.domain(pc.getOrderedDimensionKeys());
       pc.sortDimensions();
       if (flags.interactive) pc.render().updateAxes();
     })
     .on("bundleDimension", function (d) {
-      if (!d3.keys(__.dimensions).length) pc.detectDimensions();
+      if (!d3v3.keys(__.dimensions).length) pc.detectDimensions();
       pc.autoscale();
       if (typeof d.value === "number") {
-        if (d.value < d3.keys(__.dimensions).length) {
+        if (d.value < d3v3.keys(__.dimensions).length) {
           __.bundleDimension = __.dimensions[d.value];
         } else if (d.value < __.hideAxis.length) {
           __.bundleDimension = __.hideAxis[d.value];
@@ -189,11 +189,11 @@ d3.parcoords = function (config) {
   getset(pc, __, events);
 
   // expose events
-  d3.rebind(pc, events, "on");
+  d3v3.rebind(pc, events, "on");
 
   // getter/setter with event firing
   function getset(obj, state, events) {
-    d3.keys(state).forEach(function (key) {
+    d3v3.keys(state).forEach(function (key) {
       obj[key] = function (x) {
         if (!arguments.length) {
           return state[key];
@@ -254,29 +254,29 @@ d3.parcoords = function (config) {
     // yscale
     var defaultScales = {
       date: function (k) {
-        var extent = d3.extent(__.data, function (d) {
+        var extent = d3v3.extent(__.data, function (d) {
           return d[k] ? d[k].getTime() : null;
         });
 
         // special case if single value
         if (extent[0] === extent[1]) {
-          return d3.scale.ordinal().domain([extent[0]]).rangePoints(getRange());
+          return d3v3.scale.ordinal().domain([extent[0]]).rangePoints(getRange());
         }
 
-        return d3.time.scale().domain(extent).range(getRange());
+        return d3v3.time.scale().domain(extent).range(getRange());
       },
       number: function (k) {
-        var extent = d3.extent(__.data, function (d) {
+        var extent = d3v3.extent(__.data, function (d) {
           return +d[k];
         });
 
         // special case if single value
         if (extent[0] === extent[1]) {
-          return d3.scale.ordinal().domain([extent[0]]).rangePoints(getRange());
+          return d3v3.scale.ordinal().domain([extent[0]]).rangePoints(getRange());
         }
 
         console.log("extent: ", extent[0], " ", extent[1]);
-        return d3.scale
+        return d3v3.scale
           .linear()
           .domain([extent[0], extent[1]])
           .range(getRange());
@@ -302,12 +302,12 @@ d3.parcoords = function (config) {
           return counts[a] - counts[b];
         });
 
-        return d3.scale.ordinal().domain(domain).rangePoints(getRange());
+        return d3v3.scale.ordinal().domain(domain).rangePoints(getRange());
         // .tickValues([]);
       },
     };
 
-    d3.keys(__.dimensions).forEach(function (k) {
+    d3v3.keys(__.dimensions).forEach(function (k) {
       if (!__.dimensions[k].yscale) {
         __.dimensions[k].yscale = defaultScales[__.dimensions[k].type](k);
       }
@@ -375,18 +375,18 @@ d3.parcoords = function (config) {
     }
 
     // try to autodetect dimensions and create scales
-    if (!d3.keys(__.dimensions).length) {
+    if (!d3v3.keys(__.dimensions).length) {
       pc.detectDimensions();
     }
     pc.autoscale();
 
     // scales of the same type
-    var scales = d3.keys(__.dimensions).filter(function (p) {
+    var scales = d3v3.keys(__.dimensions).filter(function (p) {
       return __.dimensions[p].type == t;
     });
 
     if (global) {
-      var extent = d3.extent(
+      var extent = d3v3.extent(
         scales
           .map(function (d, i) {
             return __.dimensions[d].yscale.domain();
@@ -402,7 +402,7 @@ d3.parcoords = function (config) {
     } else {
       scales.forEach(function (d) {
         __.dimensions[d].yscale.domain(
-          d3.extent(__.data, function (d) {
+          d3v3.extent(__.data, function (d) {
             return +d[k];
           })
         );
@@ -423,7 +423,7 @@ d3.parcoords = function (config) {
 
   pc.applyDimensionDefaults = function (dims) {
     var types = pc.detectDimensionTypes(__.data);
-    dims = dims ? dims : d3.keys(types);
+    dims = dims ? dims : d3v3.keys(types);
     var newDims = {};
     var currIndex = 0;
     dims.forEach(function (k) {
@@ -447,8 +447,8 @@ d3.parcoords = function (config) {
   };
 
   pc.getOrderedDimensionKeys = function () {
-    return d3.keys(__.dimensions).sort(function (x, y) {
-      return d3.ascending(__.dimensions[x].index, __.dimensions[y].index);
+    return d3v3.keys(__.dimensions).sort(function (x, y) {
+      return d3v3.ascending(__.dimensions[x].index, __.dimensions[y].index);
     });
   };
 
@@ -471,7 +471,7 @@ d3.parcoords = function (config) {
   // attempt to determine types of each dimension based on first row of data
   pc.detectDimensionTypes = function (data) {
     var types = {};
-    d3.keys(data[0]).forEach(function (col) {
+    d3v3.keys(data[0]).forEach(function (col) {
       types[isNaN(Number(col)) ? col : parseInt(col)] = pc.toTypeCoerceNumbers(
         data[0][col]
       );
@@ -480,7 +480,7 @@ d3.parcoords = function (config) {
   };
   pc.render = function () {
     // try to autodetect dimensions and create scales
-    if (!d3.keys(__.dimensions).length) {
+    if (!d3v3.keys(__.dimensions).length) {
       pc.detectDimensions();
     }
     pc.autoscale();
@@ -492,7 +492,7 @@ d3.parcoords = function (config) {
   };
 
   pc.renderBrushed = function () {
-    if (!d3.keys(__.dimensions).length) pc.detectDimensions();
+    if (!d3v3.keys(__.dimensions).length) pc.detectDimensions();
 
     pc.renderBrushed[__.mode]();
 
@@ -523,7 +523,7 @@ d3.parcoords = function (config) {
     __.data.forEach(path_foreground);
   };
 
-  var foregroundQueue = d3
+  var foregroundQueue = d3v3
     .renderQueue(path_foreground)
     .rate(50)
     .clear(function () {
@@ -545,7 +545,7 @@ d3.parcoords = function (config) {
     }
   };
 
-  var brushedQueue = d3
+  var brushedQueue = d3v3
     .renderQueue(path_brushed)
     .rate(50)
     .clear(function () {
@@ -560,8 +560,8 @@ d3.parcoords = function (config) {
     }
   };
   function compute_cluster_centroids(d) {
-    var clusterCentroids = d3.map();
-    var clusterCounts = d3.map();
+    var clusterCentroids = d3v3.map();
+    var clusterCounts = d3v3.map();
     // determine clusterCounts
     __.data.forEach(function (row) {
       var scaled = __.dimensions[d].yscale(row[d]);
@@ -573,10 +573,10 @@ d3.parcoords = function (config) {
     });
 
     __.data.forEach(function (row) {
-      d3.keys(__.dimensions).map(function (p, i) {
+      d3v3.keys(__.dimensions).map(function (p, i) {
         var scaled = __.dimensions[d].yscale(row[d]);
         if (!clusterCentroids.has(scaled)) {
-          var map = d3.map();
+          var map = d3v3.map();
           clusterCentroids.set(scaled, map);
         }
         if (!clusterCentroids.get(scaled).has(p)) {
@@ -594,7 +594,7 @@ d3.parcoords = function (config) {
   function compute_centroids(row) {
     var centroids = [];
 
-    var p = d3.keys(__.dimensions);
+    var p = d3v3.keys(__.dimensions);
     var cols = p.length;
     var a = 0.5; // center between axes
     for (var i = 0; i < cols; ++i) {
@@ -633,7 +633,7 @@ d3.parcoords = function (config) {
   pc.compute_real_centroids = function (row) {
     var realCentroids = [];
 
-    var p = d3.keys(__.dimensions);
+    var p = d3v3.keys(__.dimensions);
     var cols = p.length;
     var a = 0.5;
 
@@ -692,9 +692,9 @@ d3.parcoords = function (config) {
     var ctx = pc.ctx.marks;
     var startAngle = 0;
     var endAngle = 2 * Math.PI;
-    ctx.globalAlpha = d3.min([1 / Math.pow(__.data.length, 1 / 2), 1]);
+    ctx.globalAlpha = d3v3.min([1 / Math.pow(__.data.length, 1 / 2), 1]);
     __.data.forEach(function (d) {
-      d3.entries(__.dimensions).forEach(function (p, i) {
+      d3v3.entries(__.dimensions).forEach(function (p, i) {
         ctx.beginPath();
         ctx.arc(
           position(p),
@@ -750,7 +750,7 @@ d3.parcoords = function (config) {
       ($(ctx.canvas).hasClass("highlight") ||
         $(ctx.canvas).hasClass("after_highlight"))
     ) {
-      d3.entries(__.dimensions).forEach(function (p, i) {
+      d3v3.entries(__.dimensions).forEach(function (p, i) {
         if (i > 0)
           ctx.fillText(
             typeof d[p.key] == "undefined" ? "undefined" : d[p.key].toFixed(2),
@@ -797,7 +797,7 @@ d3.parcoords = function (config) {
   }
 
   function single_path(d, ctx) {
-    d3.entries(__.dimensions).forEach(function (p, i) {
+    d3v3.entries(__.dimensions).forEach(function (p, i) {
       //p isn't really p
       if (i == 0) {
         ctx.moveTo(
@@ -819,9 +819,9 @@ d3.parcoords = function (config) {
 
   function path_brushed(d, i) {
     if (__.brushedColor !== null) {
-      ctx.brushed.strokeStyle = d3.functor(__.brushedColor)(d, i);
+      ctx.brushed.strokeStyle = d3v3.functor(__.brushedColor)(d, i);
     } else {
-      ctx.brushed.strokeStyle = d3.functor(__.color)(d, i);
+      ctx.brushed.strokeStyle = d3v3.functor(__.color)(d, i);
       if (inSearch) {
         ctx.brushed.globalAlpha = 0.8;
         if (d.word != selected_word) ctx.brushed.strokeStyle = "#4682B4"; //"orange"
@@ -831,15 +831,15 @@ d3.parcoords = function (config) {
   }
 
   function path_foreground(d, i) {
-    ctx.foreground.strokeStyle = d3.functor(__.color)(d, i);
+    ctx.foreground.strokeStyle = d3v3.functor(__.color)(d, i);
     return color_path(d, ctx.foreground);
   }
 
   function path_highlight(d, i) {
     // console.log(selected_word)
     if (d.word == selected_word) {
-      ctx.highlight.strokeStyle = d3.functor(__.color)(d, i);
-      ctx.after_highlight.strokeStyle = d3.functor(__.color)(d, i);
+      ctx.highlight.strokeStyle = d3v3.functor(__.color)(d, i);
+      ctx.after_highlight.strokeStyle = d3v3.functor(__.color)(d, i);
     } else {
       ctx.highlight.strokeStyle = "#4682B4"; //"orange"
       ctx.after_highlight.strokeStyle = "#4682B4"; //"orange"
@@ -864,7 +864,7 @@ d3.parcoords = function (config) {
     return this;
     // }
   };
-  d3.rebind(
+  d3v3.rebind(
     pc,
     axis,
     "ticks",
@@ -881,14 +881,14 @@ d3.parcoords = function (config) {
     if (dimension == "word") return;
 
     // reverse axis polarity labels
-    p1 = d3.select(this.parentElement).select(".polarity1").text();
-    p2 = d3.select(this.parentElement).select(".polarity2").text();
-    d3.select(this.parentElement)
+    p1 = d3v3.select(this.parentElement).select(".polarity1").text();
+    p2 = d3v3.select(this.parentElement).select(".polarity2").text();
+    d3v3.select(this.parentElement)
       .select(".polarity1")
       .transition()
       .duration(__.animationTime)
       .text(p2);
-    d3.select(this.parentElement)
+    d3v3.select(this.parentElement)
       .select(".polarity2")
       .transition()
       .duration(__.animationTime)
@@ -897,7 +897,7 @@ d3.parcoords = function (config) {
     var g = pc.svg.selectAll(".dimension");
     pc.flip(dimension);
 
-    d3.select(this.parentElement)
+    d3v3.select(this.parentElement)
       .transition()
       .duration(__.animationTime)
       .call(axis.scale(__.dimensions[dimension].yscale))
@@ -914,7 +914,7 @@ d3.parcoords = function (config) {
   function rotateLabels() {
     if (!__.rotateLabels) return;
 
-    var delta = d3.event.deltaY;
+    var delta = d3v3.event.deltaY;
     delta = delta < 0 ? -5 : delta;
     delta = delta > 0 ? 5 : delta;
 
@@ -925,7 +925,7 @@ d3.parcoords = function (config) {
         "transform",
         "translate(0,-5) rotate(" + __.dimensionTitleRotation + ")"
       );
-    d3.event.preventDefault();
+    d3v3.event.preventDefault();
   }
 
   function dimensionLabels(d) {
@@ -1174,7 +1174,7 @@ d3.parcoords = function (config) {
       .transition()
       .duration(animationTime)
       .each(function (d) {
-        d3.select(this).call(pc.applyAxisConfig(axis, __.dimensions[d]));
+        d3v3.select(this).call(pc.applyAxisConfig(axis, __.dimensions[d]));
       });
     g_data
       .select(".label")
@@ -1247,7 +1247,7 @@ d3.parcoords = function (config) {
       .transition()
       .duration(animationTime)
       .each(function (d) {
-        d3.select(this).call(pc.applyAxisConfig(axis, __.dimensions[d]));
+        d3v3.select(this).call(pc.applyAxisConfig(axis, __.dimensions[d]));
       });
 
     if (flags.brushable) pc.brushable();
@@ -1279,7 +1279,7 @@ d3.parcoords = function (config) {
     if (!g) pc.createAxes();
 
     g.style("cursor", "inherit").call(
-      d3.behavior
+      d3v3.behavior
         .drag()
         .on("dragstart", function (d) {
           // console.log("dragstart")
@@ -1290,7 +1290,7 @@ d3.parcoords = function (config) {
           if (!inSearch) {
             dragging[d] = Math.min(
               w(),
-              Math.max(0, (this.__origin__ += d3.event.dx))
+              Math.max(0, (this.__origin__ += d3v3.event.dx))
             );
             pc.sortDimensions();
             xscale.domain(pc.getOrderedDimensionKeys());
@@ -1337,7 +1337,7 @@ d3.parcoords = function (config) {
 
             delete this.__origin__;
             delete dragging[d];
-            d3.select(this)
+            d3v3.select(this)
               .transition()
               .attr("transform", "translate(" + xscale(d) + ")");
             pc.render();
@@ -1382,7 +1382,7 @@ d3.parcoords = function (config) {
 
   pc.sortDimensionsByRowData = function (rowdata) {
     var copy = __.dimensions;
-    var positionSortedKeys = d3.keys(__.dimensions).sort(function (a, b) {
+    var positionSortedKeys = d3v3.keys(__.dimensions).sort(function (a, b) {
       var pixelDifference =
         __.dimensions[a].yscale(rowdata[a]) -
         __.dimensions[b].yscale(rowdata[b]);
@@ -1404,7 +1404,7 @@ d3.parcoords = function (config) {
 
   pc.sortDimensions = function () {
     var copy = __.dimensions;
-    var positionSortedKeys = d3.keys(__.dimensions).sort(function (a, b) {
+    var positionSortedKeys = d3v3.keys(__.dimensions).sort(function (a, b) {
       return position(a) - position(b);
     });
     __.dimensions = {};
@@ -1518,7 +1518,7 @@ d3.parcoords = function (config) {
 
     // data within extents
     function selected() {
-      var actives = d3.keys(__.dimensions).filter(is_brushed),
+      var actives = d3v3.keys(__.dimensions).filter(is_brushed),
         extents = actives.map(function (p) {
           return brushes[p].extent();
         });
@@ -1586,11 +1586,11 @@ d3.parcoords = function (config) {
     function brushExtents(extents) {
       if (typeof extents === "undefined") {
         var extents = {};
-        d3.keys(__.dimensions).forEach(function (d) {
+        d3v3.keys(__.dimensions).forEach(function (d) {
           var brush = brushes[d];
           if (brush !== undefined && !brush.empty()) {
             var extent = brush.extent();
-            extent.sort(d3.ascending);
+            extent.sort(d3v3.ascending);
             extents[d] = extent;
           }
         });
@@ -1599,11 +1599,11 @@ d3.parcoords = function (config) {
         //first get all the brush selections
         var brushSelections = {};
         g.selectAll(".brush").each(function (d) {
-          brushSelections[d] = d3.select(this);
+          brushSelections[d] = d3v3.select(this);
         });
 
         // loop over each dimension and update appropriately (if it was passed in through extents)
-        d3.keys(__.dimensions).forEach(function (d) {
+        d3v3.keys(__.dimensions).forEach(function (d) {
           if (extents[d] === undefined) {
             return;
           }
@@ -1629,14 +1629,14 @@ d3.parcoords = function (config) {
     }
 
     function brushFor(axis) {
-      var brush = d3.svg.brush();
+      var brush = d3v3.svg.brush();
 
       brush
         .y(__.dimensions[axis].yscale)
         .on("brushstart", function () {
-          if (d3.event.sourceEvent !== null) {
+          if (d3v3.event.sourceEvent !== null) {
             events.brushstart.call(pc, __.brushed);
-            d3.event.sourceEvent.stopPropagation();
+            d3v3.event.sourceEvent.stopPropagation();
           }
         })
         .on("brush", function () {
@@ -1655,7 +1655,7 @@ d3.parcoords = function (config) {
         __.brushed = false;
         if (g) {
           g.selectAll(".brush").each(function (d) {
-            d3.select(this).transition().duration(0).call(brushes[d].clear());
+            d3v3.select(this).transition().duration(0).call(brushes[d].clear());
           });
           pc.renderBrushed();
         }
@@ -1663,8 +1663,8 @@ d3.parcoords = function (config) {
         if (g) {
           g.selectAll(".brush").each(function (d) {
             if (d != dimension) return;
-            d3.select(this).transition().duration(0).call(brushes[d].clear());
-            brushes[d].event(d3.select(this));
+            d3v3.select(this).transition().duration(0).call(brushes[d].clear());
+            brushes[d].event(d3v3.select(this));
           });
           pc.renderBrushed();
         }
@@ -1680,7 +1680,7 @@ d3.parcoords = function (config) {
         .append("svg:g")
         .attr("class", "brush")
         .each(function (d) {
-          d3.select(this).call(brushFor(d));
+          d3v3.select(this).call(brushFor(d));
         });
 
       brush
@@ -1732,7 +1732,7 @@ d3.parcoords = function (config) {
         points = [strum.p1, strum.p2],
         line = svg.selectAll("line#strum-" + id).data([strum]),
         circles = svg.selectAll("circle#strum-" + id).data(points),
-        drag = d3.behavior.drag();
+        drag = d3v3.behavior.drag();
 
       line
         .enter()
@@ -1758,7 +1758,7 @@ d3.parcoords = function (config) {
 
       drag
         .on("drag", function (d, i) {
-          var ev = d3.event;
+          var ev = d3v3.event;
           i = i + 1;
           strum["p" + i][0] = Math.min(
             Math.max(strum.minX + 1, ev.x),
@@ -1787,19 +1787,19 @@ d3.parcoords = function (config) {
           return activePoint !== undefined && i === activePoint ? 0.8 : 0;
         })
         .on("mouseover", function () {
-          d3.select(this).style("opacity", 0.8);
+          d3v3.select(this).style("opacity", 0.8);
         })
         .on("mouseout", function () {
-          d3.select(this).style("opacity", 0);
+          d3v3.select(this).style("opacity", 0);
         })
         .call(drag);
     }
 
     function dimensionsForPoint(p) {
       var dims = { i: -1, left: undefined, right: undefined };
-      d3.keys(__.dimensions).some(function (dim, i) {
+      d3v3.keys(__.dimensions).some(function (dim, i) {
         if (xscale(dim) < p[0]) {
-          var next = d3.keys(__.dimensions)[
+          var next = d3v3.keys(__.dimensions)[
             pc.getOrderedDimensionKeys().indexOf(dim) + 1
           ];
           dims.i = i;
@@ -1817,10 +1817,10 @@ d3.parcoords = function (config) {
         dims.right = pc.getOrderedDimensionKeys()[1];
       } else if (dims.right === undefined) {
         // Event on the right side of the last axis
-        dims.i = d3.keys(__.dimensions).length - 1;
+        dims.i = d3v3.keys(__.dimensions).length - 1;
         dims.right = dims.left;
         dims.left =
-          pc.getOrderedDimensionKeys()[d3.keys(__.dimensions).length - 2];
+          pc.getOrderedDimensionKeys()[d3v3.keys(__.dimensions).length - 2];
       }
 
       return dims;
@@ -1832,7 +1832,7 @@ d3.parcoords = function (config) {
       // logically only happen between two axes, so no movement outside these axes
       // should be allowed.
       return function () {
-        var p = d3.mouse(strumRect[0][0]),
+        var p = d3v3.mouse(strumRect[0][0]),
           dims,
           strum;
 
@@ -1860,7 +1860,7 @@ d3.parcoords = function (config) {
 
     function onDrag() {
       return function () {
-        var ev = d3.event,
+        var ev = d3v3.event,
           strum = strums[strums.active];
 
         // Make sure that the point is within the bounds
@@ -1987,7 +1987,7 @@ d3.parcoords = function (config) {
     }
 
     function install() {
-      var drag = d3.behavior.drag();
+      var drag = d3v3.behavior.drag();
 
       // Map of current strums. Strums are stored per segment of the PC. A segment,
       // being the area between two axes. The left most area is indexed at 0.
@@ -2013,8 +2013,8 @@ d3.parcoords = function (config) {
 
         // Checks if the first dimension is directly left of the second dimension.
         function consecutive(first, second) {
-          var length = d3.keys(__.dimensions).length;
-          return d3.keys(__.dimensions).some(function (d, i) {
+          var length = d3v3.keys(__.dimensions).length;
+          return d3v3.keys(__.dimensions).some(function (d, i) {
             return d === first
               ? i + i < length && __.dimensions[i + 1] === second
               : false;
@@ -2087,10 +2087,10 @@ d3.parcoords = function (config) {
   })();
 
   // brush mode: 1D-Axes with multiple extents
-  // requires d3.svg.multibrush
+  // requires d3v3.svg.multibrush
 
   (function () {
-    if (typeof d3.svg.multibrush !== "function") {
+    if (typeof d3v3.svg.multibrush !== "function") {
       return;
     }
     var brushes = {};
@@ -2101,7 +2101,7 @@ d3.parcoords = function (config) {
 
     // data within extents
     function selected() {
-      var actives = d3.keys(__.dimensions).filter(is_brushed),
+      var actives = d3v3.keys(__.dimensions).filter(is_brushed),
         extents = actives.map(function (p) {
           return brushes[p].extent();
         });
@@ -2169,7 +2169,7 @@ d3.parcoords = function (config) {
     function brushExtents(extents) {
       if (typeof extents === "undefined") {
         extents = {};
-        d3.keys(__.dimensions).forEach(function (d) {
+        d3v3.keys(__.dimensions).forEach(function (d) {
           var brush = brushes[d];
           if (brush !== undefined && !brush.empty()) {
             var extent = brush.extent();
@@ -2181,11 +2181,11 @@ d3.parcoords = function (config) {
         //first get all the brush selections
         var brushSelections = {};
         g.selectAll(".brush").each(function (d) {
-          brushSelections[d] = d3.select(this);
+          brushSelections[d] = d3v3.select(this);
         });
 
         // loop over each dimension and update appropriately (if it was passed in through extents)
-        d3.keys(__.dimensions).forEach(function (d) {
+        d3v3.keys(__.dimensions).forEach(function (d) {
           if (extents[d] === undefined) {
             return;
           }
@@ -2212,7 +2212,7 @@ d3.parcoords = function (config) {
 
     //function brushExtents() {
     //  var extents = {};
-    //  d3.keys(__.dimensions).forEach(function(d) {
+    //  d3v3.keys(__.dimensions).forEach(function(d) {
     //    var brush = brushes[d];
     //    if (brush !== undefined && !brush.empty()) {
     //      var extent = brush.extent();
@@ -2223,27 +2223,27 @@ d3.parcoords = function (config) {
     //}
 
     function brushFor(axis) {
-      var brush = d3.svg.multibrush();
+      var brush = d3v3.svg.multibrush();
 
       brush
         .y(__.dimensions[axis].yscale)
         .on("brushstart", function () {
-          if (d3.event.sourceEvent !== null) {
+          if (d3v3.event.sourceEvent !== null) {
             events.brushstart.call(pc, __.brushed);
-            d3.event.sourceEvent.stopPropagation();
+            d3v3.event.sourceEvent.stopPropagation();
           }
         })
         .on("brush", function () {
           brushUpdated(selected());
         })
         .on("brushend", function () {
-          // d3.svg.multibrush clears extents just before calling 'brushend'
+          // d3v3.svg.multibrush clears extents just before calling 'brushend'
           // so we have to update here again.
-          // This fixes issue #103 for now, but should be changed in d3.svg.multibrush
+          // This fixes issue #103 for now, but should be changed in d3v3.svg.multibrush
           // to avoid unnecessary computation.
           brushUpdated(selected());
           events.brushend.call(pc, __.brushed);
-          // d3.event.sourceEvent.stopPropagation();
+          // d3v3.event.sourceEvent.stopPropagation();
         })
         .extentAdaption(function (selection) {
           selection
@@ -2272,7 +2272,7 @@ d3.parcoords = function (config) {
       __.brushed = false;
       if (g) {
         g.selectAll(".brush").each(function (d) {
-          d3.select(this).call(brushes[d].clear());
+          d3v3.select(this).call(brushes[d].clear());
         });
         pc.renderBrushed();
       }
@@ -2287,7 +2287,7 @@ d3.parcoords = function (config) {
         .append("svg:g")
         .attr("class", "brush")
         .each(function (d) {
-          d3.select(this).call(brushFor(d));
+          d3v3.select(this).call(brushFor(d));
         });
 
       brush
@@ -2340,7 +2340,7 @@ d3.parcoords = function (config) {
           { p1: arc.p1, p2: arc.p3 },
         ]),
         circles = svg.selectAll("circle#arc-" + id).data(points),
-        drag = d3.behavior.drag(),
+        drag = d3v3.behavior.drag(),
         path = svg.selectAll("path#arc-" + id).data([arc]);
 
       path
@@ -2379,7 +2379,7 @@ d3.parcoords = function (config) {
 
       drag
         .on("drag", function (d, i) {
-          var ev = d3.event,
+          var ev = d3v3.event,
             angle = 0;
 
           i = i + 2;
@@ -2428,19 +2428,19 @@ d3.parcoords = function (config) {
           return activePoint !== undefined && i === activePoint ? 0.8 : 0;
         })
         .on("mouseover", function () {
-          d3.select(this).style("opacity", 0.8);
+          d3v3.select(this).style("opacity", 0.8);
         })
         .on("mouseout", function () {
-          d3.select(this).style("opacity", 0);
+          d3v3.select(this).style("opacity", 0);
         })
         .call(drag);
     }
 
     function dimensionsForPoint(p) {
       var dims = { i: -1, left: undefined, right: undefined };
-      d3.keys(__.dimensions).some(function (dim, i) {
+      d3v3.keys(__.dimensions).some(function (dim, i) {
         if (xscale(dim) < p[0]) {
-          var next = d3.keys(__.dimensions)[
+          var next = d3v3.keys(__.dimensions)[
             pc.getOrderedDimensionKeys().indexOf(dim) + 1
           ];
           dims.i = i;
@@ -2458,10 +2458,10 @@ d3.parcoords = function (config) {
         dims.right = pc.getOrderedDimensionKeys()[1];
       } else if (dims.right === undefined) {
         // Event on the right side of the last axis
-        dims.i = d3.keys(__.dimensions).length - 1;
+        dims.i = d3v3.keys(__.dimensions).length - 1;
         dims.right = dims.left;
         dims.left =
-          pc.getOrderedDimensionKeys()[d3.keys(__.dimensions).length - 2];
+          pc.getOrderedDimensionKeys()[d3v3.keys(__.dimensions).length - 2];
       }
 
       return dims;
@@ -2473,7 +2473,7 @@ d3.parcoords = function (config) {
       // logically only happen between two axes, so no movement outside these axes
       // should be allowed.
       return function () {
-        var p = d3.mouse(strumRect[0][0]),
+        var p = d3v3.mouse(strumRect[0][0]),
           dims,
           arc;
 
@@ -2490,7 +2490,7 @@ d3.parcoords = function (config) {
             maxY: h(),
             startAngle: undefined,
             endAngle: undefined,
-            arc: d3.svg.arc().innerRadius(0),
+            arc: d3v3.svg.arc().innerRadius(0),
           });
 
         arcs[dims.i] = arc;
@@ -2505,7 +2505,7 @@ d3.parcoords = function (config) {
 
     function onDrag() {
       return function () {
-        var ev = d3.event,
+        var ev = d3v3.event,
           arc = arcs[arcs.active];
 
         // Make sure that the point is within the bounds
@@ -2681,7 +2681,7 @@ d3.parcoords = function (config) {
     }
 
     function install() {
-      var drag = d3.behavior.drag();
+      var drag = d3v3.behavior.drag();
 
       // Map of current arcs. arcs are stored per segment of the PC. A segment,
       // being the area between two axes. The left most area is indexed at 0.
@@ -2762,8 +2762,8 @@ d3.parcoords = function (config) {
 
         // Checks if the first dimension is directly left of the second dimension.
         function consecutive(first, second) {
-          var length = d3.keys(__.dimensions).length;
-          return d3.keys(__.dimensions).some(function (d, i) {
+          var length = d3v3.keys(__.dimensions).length;
+          return d3v3.keys(__.dimensions).some(function (d, i) {
             return d === first
               ? i + i < length && __.dimensions[i + 1] === second
               : false;
@@ -2889,7 +2889,7 @@ d3.parcoords = function (config) {
     __.highlighted = data;
     //highlight_axis_subgroups(__.highlighted[0])
     pc.clear("highlight");
-    d3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", true);
+    d3v3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", true);
     data.forEach(path_highlight);
     events.highlight.call(this, data);
     return this;
@@ -2919,7 +2919,7 @@ d3.parcoords = function (config) {
 
     __.highlighted = [];
     pc.clear("highlight");
-    d3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", false);
+    d3v3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", false);
     return this;
   };
 
@@ -2931,8 +2931,8 @@ d3.parcoords = function (config) {
 
     __.highlighted = data;
     pc.clear("after_highlight");
-    // d3.selectAll([canvas.highlight]).classed("faded", true);
-    d3.selectAll([canvas.foreground, canvas.brushed, canvas.highlight]).classed(
+    // d3v3.selectAll([canvas.highlight]).classed("faded", true);
+    d3v3.selectAll([canvas.foreground, canvas.brushed, canvas.highlight]).classed(
       "invisible",
       true
     );
@@ -2945,8 +2945,8 @@ d3.parcoords = function (config) {
   pc.unAfterHighlight = function () {
     __.highlighted = [];
     pc.clear("after_highlight");
-    // d3.selectAll([canvas.highlight]).classed("faded", false);
-    d3.selectAll([canvas.foreground, canvas.brushed, canvas.highlight]).classed(
+    // d3v3.selectAll([canvas.highlight]).classed("faded", false);
+    d3v3.selectAll([canvas.foreground, canvas.brushed, canvas.highlight]).classed(
       "invisible",
       false
     );
@@ -3037,9 +3037,9 @@ d3.parcoords = function (config) {
   pc.toString = function () {
     return (
       "Parallel Coordinates: " +
-      d3.keys(__.dimensions).length +
+      d3v3.keys(__.dimensions).length +
       " dimensions (" +
-      d3.keys(__.data[0]).length +
+      d3v3.keys(__.data[0]).length +
       " total) , " +
       __.data.length +
       " rows"
@@ -3049,7 +3049,7 @@ d3.parcoords = function (config) {
   return pc;
 };
 
-d3.renderQueue = function (func) {
+d3v3.renderQueue = function (func) {
   var _queue = [], // data to be rendered
     _rate = 10, // number of calls per frame
     _clear = function () {}, // clearing function
@@ -3083,7 +3083,7 @@ d3.renderQueue = function (func) {
       _i += _rate;
     }
 
-    d3.timer(doFrame);
+    d3v3.timer(doFrame);
   };
 
   rq.data = function (data) {

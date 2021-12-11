@@ -1,5 +1,5 @@
 (function () {
-  d3.svg.multibrush = function() {
+  d3v3.svg.multibrush = function() {
 
     // From d3/scale/scale.js
     function d3_scaleExtent(domain) {
@@ -31,7 +31,7 @@
     }
 
     function d3_eventPreventDefault() {
-      d3.event.preventDefault();
+      d3v3.event.preventDefault();
     }
 
     function d3_vendorSymbol(object, name) {
@@ -46,7 +46,7 @@
 
     var d3_event_dragSelect = "onselectstart" in document ? null : d3_vendorSymbol(document.documentElement.style, "userSelect"), d3_event_dragId = 0;
     function d3_event_dragSuppress(node) {
-      var name = ".dragsuppress-" + ++d3_event_dragId, click = "click" + name, w = d3.select(d3_window(node)).on("touchmove" + name, d3_eventPreventDefault).on("dragstart" + name, d3_eventPreventDefault).on("selectstart" + name, d3_eventPreventDefault);
+      var name = ".dragsuppress-" + ++d3_event_dragId, click = "click" + name, w = d3v3.select(d3_window(node)).on("touchmove" + name, d3_eventPreventDefault).on("dragstart" + name, d3_eventPreventDefault).on("selectstart" + name, d3_eventPreventDefault);
       if (d3_event_dragSelect == null) {
         d3_event_dragSelect = "onselectstart" in node ? false : d3_vendorSymbol(node.style, "userSelect");
       }
@@ -70,7 +70,7 @@
       };
     }
 
-    var event = d3.dispatch("brushstart", "brush", "brushend"),
+    var event = d3v3.dispatch("brushstart", "brush", "brushend"),
         brushElement,
         x = null, // x-scale, optional
         y = null, // y-scale, optional
@@ -88,12 +88,12 @@
       return function(e1) {
         try {
           var e0 =
-          e1.sourceEvent = d3.event;
+          e1.sourceEvent = d3v3.event;
           e1.target = brush;
-          d3.event = e1;
+          d3v3.event = e1;
           event[e1.type].apply(thiz, argumentz);
         } finally {
-          d3.event = e0;
+          d3v3.event = e0;
         }
       };
     };
@@ -102,7 +102,7 @@
       g.each(function() {
 
         // Prepare the brush container for events.
-        var g = d3.select(this)
+        var g = d3v3.select(this)
             .style("pointer-events", "all")
             .style("-webkit-tap-highlight-color", "rgba(0,0,0,0)")
             .on("mousedown.brush", brushstart)
@@ -122,8 +122,8 @@
         drawExtents(g);
 
         // When called on a transition, use a transition to update.
-        var gUpdate = d3.transition(g),
-            backgroundUpdate = d3.transition(background),
+        var gUpdate = d3v3.transition(g),
+            backgroundUpdate = d3v3.transition(background),
             range;
 
         // Initialize the background to fill the defined range.
@@ -146,7 +146,7 @@
       var ex = xExtent.length > yExtent.length ? xExtent : yExtent,
           i = ex.length
           extentArr = ex.map(function(d,i) { return i; }),
-          extentResizes = d3.merge(ex.map(function(d,i) { return resizes.map(function(r) { return [r, i]; }); }));
+          extentResizes = d3v3.merge(ex.map(function(d,i) { return resizes.map(function(r) { return [r, i]; }); }));
 
       if(!g) g = brushElement;
 
@@ -215,24 +215,24 @@
 
     function brushstart() {
       var target = this,
-          eventTarget = d3.select(d3.event.target),
+          eventTarget = d3v3.select(d3v3.event.target),
           event_ = event.of(target, arguments),
-          g = d3.select(target),
+          g = d3v3.select(target),
           resizing = eventTarget.datum()[0],
           resizingX = !/^(n|s)$/.test(resizing) && x,
           resizingY = !/^(e|w)$/.test(resizing) && y,
           dragging = eventTarget.classed("extent"),
           dragRestore = d3_event_dragSuppress(target),
           center,
-          origin = d3.mouse(target),
+          origin = d3v3.mouse(target),
           offset,
           i;
 
-      var w = d3.select(window)
+      var w = d3v3.select(window)
           .on("keydown.brush", keydown)
           .on("keyup.brush", keyup);
 
-      if (d3.event.changedTouches) {
+      if (d3v3.event.changedTouches) {
         w.on("touchmove.brush", brushmove).on("touchend.brush", brushend);
       } else {
         w.on("mousemove.brush", brushmove).on("mouseup.brush", brushend);
@@ -267,12 +267,12 @@
         yExtent.push([0,0]);
 
         // If the ALT key is down when starting a brush, the center is at the mouse.
-        if (d3.event.altKey) center = origin.slice();
+        if (d3v3.event.altKey) center = origin.slice();
       }
 
       // Propagate the active cursor to the body for the drag duration.
       g.style("pointer-events", "none");
-      d3.select("body").style("cursor", eventTarget.style("cursor"));
+      d3v3.select("body").style("cursor", eventTarget.style("cursor"));
 
       // Show resizers as long as we're not dragging or resizing.
       if(!dragging && !resizing) g.selectAll(".resize").style("display", null)
@@ -282,28 +282,28 @@
       brushmove();
 
       function keydown() {
-        if (d3.event.keyCode == 32) {
+        if (d3v3.event.keyCode == 32) {
           if (!dragging) {
             center = null;
             origin[0] -= xExtent[i][1];
             origin[1] -= yExtent[i][1];
             dragging = 2;
           }
-          d3.event.preventDefault();
+          d3v3.event.preventDefault();
         }
       }
 
       function keyup() {
-        if (d3.event.keyCode == 32 && dragging == 2) {
+        if (d3v3.event.keyCode == 32 && dragging == 2) {
           origin[0] += xExtent[i][1];
           origin[1] += yExtent[i][1];
           dragging = 0;
-          d3.event.preventDefault();
+          d3v3.event.preventDefault();
         }
       }
 
       function brushmove() {
-        var point = d3.mouse(target),
+        var point = d3v3.mouse(target),
             moved = false;
 
         // Preserve the offset for thick resizers.
@@ -315,7 +315,7 @@
         if (!dragging) {
 
           // If needed, determine the center from the current extent.
-          if (d3.event.altKey) {
+          if (d3v3.event.altKey) {
             if (!center) center = [(xExtent[i][0] + xExtent[i][1]) / 2, (yExtent[i][0] + yExtent[i][1]) / 2];
 
             // Update the origin, for when the ALT key is released.
@@ -403,7 +403,7 @@
 
         // reset the cursor styles
         g.style("pointer-events", "all").selectAll(".resize").style("display", function(d) { return brush.empty(d[1]) ? "none" : null; });
-        d3.select("body").style("cursor", null);
+        d3v3.select("body").style("cursor", null);
 
         w .on("mousemove.brush", null)
           .on("mouseup.brush", null)
@@ -557,7 +557,7 @@
       }
     };
 
-    return d3.rebind(brush, event, "on");
+    return d3v3.rebind(brush, event, "on");
   };
 
   var d3_svg_brushCursor = {
