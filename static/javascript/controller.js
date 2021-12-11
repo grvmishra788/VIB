@@ -25,12 +25,12 @@ bias_words = {
       "white, whites, White, Whites, Caucasian, caucasian, European, european, Anglo",
     Black: "black, blacks, Black, Blacks, African, african, Afro",
   },
-  sentiment: {
-    unpleasant:
-      "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison",
-    pleasant:
-      "caress, freedom, health, love, peace, cheer, friend, heaven, loyal, pleasure, diamond, gentle, honest, lucky, rainbow, diploma, gift, honor, miracle, sunrise, family, happy, laughter, paradise, vacation",
-  },
+  // sentiment: {
+  //   unpleasant:
+  //     "abuse, crash, filth, murder, sickness, accident, death, grief, poison, stink, assault, disaster, hatred, pollute, tragedy, divorce, jail, poverty, ugly, cancer, kill, rotten, vomit, agony, prison",
+  //   pleasant:
+  //     "caress, freedom, health, love, peace, cheer, friend, heaven, loyal, pleasure, diamond, gentle, honest, lucky, rainbow, diploma, gift, honor, miracle, sunrise, family, happy, laughter, paradise, vacation",
+  // },
   religion: {
     Islam:
       "allah, ramadan, turban, emir, salaam, sunni, koran, imam, sultan, prophet, veil, ayatollah, shiite, mosque, islam, sheik, muslim, muhammad",
@@ -61,12 +61,11 @@ $(document).ready(function () {
   // $("#spinner").addClass("lds-hourglass");
 
   $.get("/getFileNames/", function (res) {
-    console.log("HEREEEEEEE0");
-    var target = res[1]; // List of file names for target
-    console.log(target);
+    // var target = res[1]; // List of file names for target
+    // console.log(target);
     //$('#gp1_dropdown').append(populateDropDownList(group));
     //$('#gp2_dropdown').append(populateDropDownList(group));
-    $("#dropdown_target").append(populateDropDownList(target));
+    // $("#dropdown_target").append(populateDropDownList(target));
     //$('#word_sim_dropdown').append(populateDropDownList(sim_files));
     //$('#word_ana_dropdown').append(populateDropDownList(ana_files));
 

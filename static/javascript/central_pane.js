@@ -2,6 +2,20 @@ function createParallelCoord(data) {
   // linear color scale
   $("#parallel_coord").empty();
 
+  var green_to_blue = d3v3.scale.linear()
+  .domain([9, 50])
+  .range(["#00B0DD", "#7AC143"])
+  .interpolate(d3.interpolateLab);
+
+  var color = function(d) { 
+    if(d.rowIndex<50000){
+      return "red";
+    } else {
+      return "yellow";
+    }
+
+  };
+
   var pc = d3v3
     .parcoords()("#parallel_coord")
     .data(data)
@@ -11,7 +25,7 @@ function createParallelCoord(data) {
     .bundleDimension(Object.keys(data[0])[1])
     .hideAxis(["word"])
     .composite("darken")
-    .color("steelblue") // quantitative color scale
+    .color(color) // quantitative color scale
     .alpha(0.6)
     .mode("queue")
     //.render()
@@ -24,6 +38,59 @@ function createParallelCoord(data) {
 
 //________________________________________________________FROM HERE_________//
 // This code was originally in  left_pane.js
+
+function updateProgressBar(selected) {
+  // r = (selected.length / data.length) * 100;
+  $("#progressbar")
+    .css("width", r + "%")
+    .attr("aria-valuenow", r);
+  if (selected.length > 1000)
+    $("#progress_value").html(
+      "Selected Words: " +
+        (selected.length / 1000).toFixed(0) +
+        "K/" +
+        (data.length / 1000).toFixed(0) +
+        "K"
+    );
+  else
+    $("#progress_value").html(
+      "Selected Words: " +
+        selected.length.toFixed(0) +
+        "/" +
+        (data.length / 1000).toFixed(0) +
+        "K"
+    );
+}
+
+function load_and_plot_new_data() {
+  //$("#spinner").addClass("lds-hourglass");
+  $.get(
+    "/get_csv/",
+    {
+      scaling: $("#scaling").val(),
+      embedding: $("#dropdown_embedding").val(),
+    },
+    function (res) {
+      initialize(res);
+    }
+  );
+}
+
+$("#dropdown_embedding").change(function (event) {
+  console.log("Change dropdown menu - Word Embedding");
+  // set current embedding
+  current_embedding = $("#dropdown_embedding").val();
+  $.get(
+    "/set_model",
+    {
+      embedding: current_embedding,
+    },
+    function (res) {
+      load_and_plot_new_data();
+    }
+  );
+});
+
 // Given a list as input, populate drop down menu with each element as an option
 function populateDropDownList(data) {
   var option = "";
@@ -53,7 +120,7 @@ function changeTarget(selVal) {
       path: path,
     },
     (res) => {
-      console.log(res);
+      // console.log(res);
       $("#target").val(res["target"].join());
     }
   );
@@ -106,7 +173,7 @@ $("#bundle_input").on("change", function () {
 
 $("#bundle_dimension").on("change", function () {
   value = $(this).val();
-  console.log(value);
+  // console.log(value);
   pc.bundleDimension(value);
 });
 
@@ -125,7 +192,7 @@ function brush_reset() {
     d3v3.selectAll([pc.canvas["brushed"]]).classed("full", false);
     d3v3.selectAll([pc.canvas["brushed"]]).classed("faded", true);
   } else {
-    // updateProgressBar(active_data);
+    updateProgressBar(active_data);
     $("#neighbors_list").empty();
   }
 }

@@ -10,6 +10,10 @@ import json
 import copy
 import csv
 
+from gensim.models import KeyedVectors
+import gensim.models.keyedvectors as word2vec
+from gensim.scripts.glove2word2vec import glove2word2vec
+
 app = Flask(__name__)
 app.embedding_path = 'data/embedding.pkl'
 app.base_embedding = load(app.embedding_path)
@@ -258,6 +262,7 @@ def set_model():
 
 def load_embedding(name):
     global model, language
+
     if model is None:
         name = "Word2Vec"
         #name = "Glove (wiki 300d)" 
@@ -269,10 +274,11 @@ def load_embedding(name):
         # print("Glove word embedding backend")
         language = 'en'
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove_50k.bin', binary=True) #   
-    elif name=="Word2Vec debiased":
+    elif name=="Both (Compare)":
         # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
         language = 'en'
-        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin', binary=True, limit=50000) 
+        model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
+        model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove_50k.bin', binary=True) 
     return
 
 @app.route('/get_csv/')
@@ -286,7 +292,7 @@ def get_csv():
     print("/get_csv/")
     print("Scaling: ", scaling)
     print("Embedding: ", embedding)
-    
+    # scaling = "Percentile"
     if embedding=="Word2Vec":
         if scaling=="Normalization":
             df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
@@ -295,10 +301,14 @@ def get_csv():
         else:
             df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
     elif embedding=="Glove (wiki 300d)":
-        if scaling=="Normalization":
-            df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False)
-        elif scaling=="Percentile":
-            df = pd.read_csv("./data/glove_50k_percentile.csv",header=0, keep_default_na=False)
+        if scaling=="Percentile":
+            df = pd.read_csv("./data/glove_50k_percentile.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
+        else:
+            df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
+    elif embedding=="Both (Compare)":
+        df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
+        df = df.append(pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment']))
+        # return  df.to_json(orient='records')+ df1.to_json(orient='records')
     out = df.to_json(orient='records')
     #print("out", out)
     return out
@@ -306,7 +316,7 @@ def get_csv():
 @app.route('/get_all_words')
 def get_all_words():
     if not model:
-        setModel()
+        set_model()
     return jsonify(list(model.vocab.keys()))
 
 

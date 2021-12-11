@@ -734,6 +734,8 @@ d3v3.parcoords = function (config) {
 
   // draw single polyline
   function color_path(d, ctx) {
+    
+    // ctx.strokeStyle = d3.functor(__.color)(d, i);
     ctx.beginPath();
     if (
       (__.bundleDimension !== null && __.bundlingStrength > 0) ||
@@ -2887,6 +2889,11 @@ d3v3.parcoords = function (config) {
     //highlight_axis_subgroups(__.highlighted[0])
     pc.clear("highlight");
     d3v3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", true);
+    // console.log("!@HERE");
+    // console.log(data.length);
+    // for (let i = 0; i < data.length; i++) {
+    //   path_highlight(data[i],i);
+    // }
     data.forEach(path_highlight);
     events.highlight.call(this, data);
     return this;

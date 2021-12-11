@@ -49,6 +49,22 @@
 
 
             <div id="seedset-container">
+                <div style="text-align: center">
+                    <label style="padding-bottom: 0; margin-bottom: 0">
+                      Word Embedding</label
+                    >
+                    <select
+                      id="dropdown_embedding"
+                      class="custom-select greyed"
+                      style="width: 90%"
+                    >
+                      <option selected>Word2Vec</option>
+                      <option >Glove (wiki 300d)</option>
+                      <option >Both (Compare)</option>
+                      <!-- <option>Word2Vec debiased</option> -->
+                    </select>
+                </div>
+
                 <div id="input-two-col" class="input-group w-100 vert-space">
                     <div class="input-group-prepend w-25">
                         <input type="text" class="w-100 input-group-text" id="concept-label-1" value="Concept1"/>
