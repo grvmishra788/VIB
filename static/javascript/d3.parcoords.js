@@ -52,7 +52,7 @@ d3v3.parcoords = function (config) {
     selection = pc.selection = d3v3.select(selection);
 
     __.width = selection[0][0].clientWidth;
-    __.height = selection[0][0].clientHeight - 20;
+    __.height = selection[0][0].clientHeight;
 
     // canvas data layers
     ["marks", "foreground", "brushed", "highlight", "after_highlight"].forEach(
@@ -70,7 +70,6 @@ d3v3.parcoords = function (config) {
       .attr("height", __.height)
       .style("font", "14px sans-serif")
       .style("position", "absolute")
-
       .append("svg:g")
       .attr(
         "transform",
@@ -167,7 +166,6 @@ d3v3.parcoords = function (config) {
       }
     })
     .on("hideAxis", function (d) {
-      // console.log("hideaxis")
       pc.dimensions(pc.applyDimensionDefaults());
       pc.dimensions(without(__.dimensions, d.value));
     })
@@ -1081,7 +1079,6 @@ d3v3.parcoords = function (config) {
     if (typeof animationTime === "undefined") {
       animationTime = __.animationTime;
     }
-    // console.log("update!!!",pc.getOrderedDimensionKeys())
     var g_data = pc.svg
       .selectAll(".dimension")
       .data(pc.getOrderedDimensionKeys());

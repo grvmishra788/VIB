@@ -8,7 +8,7 @@ function svg_setup() {
   let svg = d3.select('#animation-scatter');
   let svg_dim = Math.min(container_dims.width, container_dims.height);
   svg.attr('width', container_dims.width)
-    .attr('height', 0.55 * container_dims.height)
+    .attr('height', 0.5 * container_dims.height)
 }
 
 svg_setup()
@@ -180,6 +180,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       d3.select(this).classed('translucent', false);
     })
     .on('click', function (d) {
+      /*
       $('#knn').prop('hidden', false);
       let neigbors_base = neighbor_data.base[d.label]
       let neighbors_debiased = neighbor_data.debiased[d.label];
@@ -197,6 +198,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
         .join('span')
         .classed('neighbor-item', true)
         .html(d => d);
+        */
     })
     .on('mouseout', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
@@ -892,6 +894,16 @@ $('#seedword-form-submit').click(function () {
       success: function (response) {
         // let predebiased_svg = d3.select('#pre-debiased-svg');
         // draw_scatter_static(predebiased_svg, response, 'Pre-debiasing', false,);
+        filter_words = [];
+        text = evalwords.toLowerCase()
+        text = text.split(/[\n, ]+/)
+        for (i = 0; i < text.length; i++) {
+          if (text[i].length > 0) {
+            filter_words.push(text[i])
+          }
+        }
+
+        highlightWords(null, (neighbors = filter_words))
 
         let animation_svg = d3.select('#animation-scatter');
         // draw_svg_scatter(animation_svg, response, 'Pre-debiasing', true, true);
