@@ -4,11 +4,11 @@
 
 // Set the SVG height and width
 function svg_setup() {
-  let container_dims = document.getElementById('parallel_coord').getBoundingClientRect();
-  let svg = d3.select('#animation-svg');
+  let container_dims = document.getElementById('control-panel').getBoundingClientRect();
+  let svg = d3.select('#animation-scatter');
   let svg_dim = Math.min(container_dims.width, container_dims.height);
-  svg.attr('width', svg_dim)
-    .attr('height', svg_dim)
+  svg.attr('width', container_dims.width)
+    .attr('height', 0.55 * container_dims.height)
 }
 
 svg_setup()
@@ -835,7 +835,7 @@ $('#toggle-scrshot-chk').click(function () {
 
 function svg_cleanup() {
   $('#pre-debiased-svg').empty();
-  $('#animation-svg').empty();
+  $('#animation-scatter').empty();
   $('#post-debiased-svg').empty();
 }
 
@@ -893,7 +893,7 @@ $('#seedword-form-submit').click(function () {
         // let predebiased_svg = d3.select('#pre-debiased-svg');
         // draw_scatter_static(predebiased_svg, response, 'Pre-debiasing', false,);
 
-        let animation_svg = d3.select('#animation-svg');
+        let animation_svg = d3.select('#animation-scatter');
         // draw_svg_scatter(animation_svg, response, 'Pre-debiasing', true, true);
         setup_animation(animation_svg, response, 'animation')
 

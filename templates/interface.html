@@ -24,9 +24,8 @@
 
 <div class="container-fluid h-100 p-3">
     <div class="row h-100">
-        <div id="control-panel" class="col-4 border-right">
+        <div id="control-panel" class="col-6 border-right">
             <!--
-            
             <h4 class="text-center bg-dark text-light p-3 rounded">VERB
                 <svg id="tour-question"
                      xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -36,7 +35,7 @@
                         d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
                 </svg>
             </h4>
-                -->
+        -->
 
             <!--
             <div id="preloaded-examples" class="dropdown vert-space">
@@ -293,12 +292,28 @@
                 <h5> Explanation </h5>
                 <div id="explanation-text" class="explanation-text text-slightly-muted"></div>
                 <hr />
+            </div>
+
+            <div id="visualization-panel" class="col-6">
+                <div id="scatter-holder" style="width: 100%; height: 100%">
+                    <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+                    <svg id="animation-scatter">
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+        <!--
           <div class="feature">
             <p style="text-align: center; margin-bottom: 10px">
               Highlight Neutral Words
             </p>
             <div style="text-align: center">
-              <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> -->
+              <!-- <p style="display: inline-block; opacity:0.7">Select Group:</p> 
               <select
                 id="dropdown_target"
                 onchange="changeTarget(this.value)"
@@ -308,7 +323,7 @@
               <button id="highlight_words" class="greyed_border">
                 <i class="play icon"></i>
               </button>
-              <!-- <i class="play icon"></i> -->
+              <!-- <i class="play icon"></i> 
             </div>
             <textarea
               class="form-control"
@@ -321,11 +336,12 @@
                         <button id="cancel_highlight_words" class="greyed_border"><i class="pause icon"></i></button>
                         <button id="highlight_words" class="greyed_border"><i class="play icon"></i></button>
                     </div>
-                    -->
+                    
           </div>
             </div>
 
             <hr/>
+        -->
 
             <div id="knn" class="vert-space" hidden>
                 <div id="base-neighbors">
@@ -349,7 +365,7 @@
         </div>
 
         <div id="visualization-panel" class="col-6">
-            <div id="parallel_coord" class="parcoords" style="width: 90%; height: 100%">
+            <div id="parallel_coord" class="parcoords" style="width: 100%; height: 100%">
                 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
                 <svg id="animation-svg">
                     <defs>
@@ -361,6 +377,7 @@
             </div>
         </div>
 
+        <!--
         <div class="col-lg-2 greyed border-left" >
             <div
               class="ui search feature"
@@ -378,7 +395,7 @@
               style="height: 95vh; max-height: 95vh; overflow: scroll"
             ></div>
         </div>
-
+        -->
     </div>
 </div>
 
