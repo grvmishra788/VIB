@@ -175,9 +175,10 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
       anchorArray.push({x: x_coord, y: y_coord, r: 10})
       return 'translate(' + x(d.x) + ',' + y(d.y) + ')'
     })
-    .on('mouseover', function () {
+    .on('mouseover', function (d) {
       svg.selectAll('g.datapoint-group').classed('translucent', true);
       d3.select(this).classed('translucent', false);
+      highlightWords(d.label)
     })
     .on('click', function (d) {
       /*
@@ -202,6 +203,7 @@ function draw_scatter_anim(svg, point_data, neighbor_data, x, y, width, height, 
     })
     .on('mouseout', function () {
       svg.selectAll('g.datapoint-group').classed('translucent', false);
+      cancelHighlight();
     })
 
   // Draw labels
