@@ -2,7 +2,13 @@ word_clicked = "";
 
 // show, hide word axis
 function updateWordAxis(data) {
-  words = data.map((d) => d.word);
+  try {
+    words = data.map((d) => d.word);
+  }
+  catch(err) {
+    console.log(err.message);
+  }
+  // words = data.map((d) => d.word);
   pc.data(data);
   if (data.length < 75) {
     if (hideAxis) {
@@ -15,8 +21,13 @@ function updateWordAxis(data) {
     // setTimeout(function(){d3.selectAll("#word_dimension .tick text").on("click",labelClick) }, 300);
   } else if (!hideAxis) {
     pc.hideAxis(["word"]);
+    pc.hideAxis(["type"]);
     hideAxis = true;
   }
+}
+
+function hideTypeAxis(){
+  pc.hideAxis(["type"]);
 }
 
 //Highlight words using highlight or after_highlight canvas
@@ -46,6 +57,8 @@ function highlightWords(word, neighbors = []) {
     // highlight neighbors, using the extra canvas layer
     pc.afterHighlight(data_rows);
   }
+  console.log("Hiding type axis ------");
+  // hideTypeAxis();
   // updateProgressBar(data_rows)
 }
 
@@ -142,7 +155,7 @@ function labelClick(d, i) {
 function axisLabelClick(axis_name) {
   last_selected_axis_name = axis_name;
   console.log("clicking on the title of axis " + axis_name);
-  if (axis_name != "word") {
+  if (axis_name != "word" && axis_name != "type") {
     clear_bias_words_section();
     // populate corresponding bias words in the textarea
     group_words = bias_words[axis_name];
@@ -192,7 +205,7 @@ $("body").on("click", "#canvas_svg", function (e) {
     afterHighlight = false;
     word_clicked = "";
     cancelHighlight();
-    updateProgressBar(active_data);
+    // updateProgressBar(active_data);
     updateWordAxis(active_data);
     clear_bias_words_section();
   } else if (!pc.isBrushed()) {

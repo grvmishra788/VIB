@@ -2,11 +2,6 @@ function createParallelCoord(data) {
   // linear color scale
   $("#parallel_coord").empty();
 
-  var green_to_blue = d3v3.scale.linear()
-  .domain([9, 50])
-  .range(["#00B0DD", "#7AC143"])
-  .interpolate(d3.interpolateLab);
-
   var color = function(d) { 
     if(d.rowIndex<50000){
       return "red";
@@ -39,28 +34,28 @@ function createParallelCoord(data) {
 //________________________________________________________FROM HERE_________//
 // This code was originally in  left_pane.js
 
-function updateProgressBar(selected) {
-  // r = (selected.length / data.length) * 100;
-  $("#progressbar")
-    .css("width", r + "%")
-    .attr("aria-valuenow", r);
-  if (selected.length > 1000)
-    $("#progress_value").html(
-      "Selected Words: " +
-        (selected.length / 1000).toFixed(0) +
-        "K/" +
-        (data.length / 1000).toFixed(0) +
-        "K"
-    );
-  else
-    $("#progress_value").html(
-      "Selected Words: " +
-        selected.length.toFixed(0) +
-        "/" +
-        (data.length / 1000).toFixed(0) +
-        "K"
-    );
-}
+// function updateProgressBar(selected) {
+//   // r = (selected.length / data.length) * 100;
+//   $("#progressbar")
+//     .css("width", r + "%")
+//     .attr("aria-valuenow", r);
+//   if (selected.length > 1000)
+//     $("#progress_value").html(
+//       "Selected Words: " +
+//         (selected.length / 1000).toFixed(0) +
+//         "K/" +
+//         (data.length / 1000).toFixed(0) +
+//         "K"
+//     );
+//   else
+//     $("#progress_value").html(
+//       "Selected Words: " +
+//         selected.length.toFixed(0) +
+//         "/" +
+//         (data.length / 1000).toFixed(0) +
+//         "K"
+//     );
+// }
 
 function load_and_plot_new_data() {
   //$("#spinner").addClass("lds-hourglass");
@@ -186,13 +181,13 @@ function brush_reset() {
 
   if (inSearch) {
     populate_neighbors(highlighted_data);
-    updateProgressBar(highlighted_data);
+    // updateProgressBar(highlighted_data);
 
     d3v3.selectAll([pc.canvas["highlight"]]).classed("faded", false);
     d3v3.selectAll([pc.canvas["brushed"]]).classed("full", false);
     d3v3.selectAll([pc.canvas["brushed"]]).classed("faded", true);
   } else {
-    updateProgressBar(active_data);
+    // updateProgressBar(active_data);
     $("#neighbors_list").empty();
   }
 }

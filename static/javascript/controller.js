@@ -140,7 +140,7 @@ function initialize(res) {
 function populate_histogram_bias_type(row) {
   bias_types = ["ALL"];
   for (key in row) {
-    if (key == "word") {
+    if (key == "word" || key=="type") {
       continue;
     }
     bias_types.push(key);
@@ -176,7 +176,7 @@ $("#dropdown_embedding").change(function (event) {
 
 function searchWords(word) {
   $.get("/search/" + word, {}, (res) => {
-    updateProgressBar(res);
+    // updateProgressBar(res);
     highlightWords(word, res);
   });
 }

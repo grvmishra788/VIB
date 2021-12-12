@@ -142,6 +142,9 @@ d3v3.parcoords = function (config) {
     })
     .on("dimensions", function (d) {
       // console.log("called")
+      if(d=="type"){
+        return
+      }
       __.dimensions = pc.applyDimensionDefaults(d3v3.keys(d.value));
       xscale.domain(pc.getOrderedDimensionKeys());
       pc.sortDimensions();
@@ -736,6 +739,15 @@ d3v3.parcoords = function (config) {
   function color_path(d, ctx) {
     
     // ctx.strokeStyle = d3.functor(__.color)(d, i);
+    console.log("3. Type - ", d.type);
+    if(d.type==0){
+      console.log("3. Type f - ", 0);
+      ctx.strokeStyle = "blue";      
+    } else {
+      console.log("3. Type f - ", 1);
+      ctx.strokeStyle = "green";
+    }
+
     ctx.beginPath();
     if (
       (__.bundleDimension !== null && __.bundlingStrength > 0) ||
@@ -798,6 +810,10 @@ d3v3.parcoords = function (config) {
 
   function single_path(d, ctx) {
     d3v3.entries(__.dimensions).forEach(function (p, i) {
+      // console.log("single_path()", p);
+      if(p.key=="type"){
+        return;
+      }
       //p isn't really p
       if (i == 0) {
         ctx.moveTo(
@@ -827,6 +843,15 @@ d3v3.parcoords = function (config) {
         if (d.word != selected_word) ctx.brushed.strokeStyle = "#4682B4"; //"orange"
       }
     }
+    console.log("2. Type - ", d.type);
+    if(d.type==0){
+      console.log("2. Type f - ", 0);
+      ctx.brushed.strokeStyle = "blue";      
+    } else {
+      console.log("2. Type f - ", 1);
+      ctx.brushed.strokeStyle = "green";
+    }
+
     return color_path(d, ctx.brushed);
   }
 
@@ -843,6 +868,19 @@ d3v3.parcoords = function (config) {
     } else {
       ctx.highlight.strokeStyle = "#4682B4"; //"orange"
       ctx.after_highlight.strokeStyle = "#4682B4"; //"orange"
+    }
+    console.log("1. Type - ", d.type);
+    if(d.type==0){
+      console.log("1. Type f - ", 0);
+      ctx.strokeStyle="blue";
+      ctx.highlight.strokeStyle = "blue";
+      ctx.after_highlight.strokeStyle = "blue";
+      
+    } else {
+      console.log("1. Type f - ", 1);
+      ctx.strokeStyle="green";
+      ctx.highlight.strokeStyle = "green";
+      ctx.after_highlight.strokeStyle = "green";
     }
     if (!afterHighlight) return color_path(d, ctx.highlight);
     return color_path(d, ctx.after_highlight);
@@ -878,7 +916,7 @@ d3v3.parcoords = function (config) {
 
   function flipAxisAndUpdatePCP(dimension) {
     console.log("Flip axes:", dimension);
-    if (dimension == "word") return;
+    if (dimension == "word" || dimension == "type") return;
 
     // reverse axis polarity labels
     p1 = d3v3.select(this.parentElement).select(".polarity1").text();
@@ -937,16 +975,19 @@ d3v3.parcoords = function (config) {
   function dimensionPolarity(d, i) {
     //return categories[i][d]
     d = d.toLowerCase();
-    if (d == "word") {
+    if (d == "word" || d=="type") {
       return;
     }
     return Object.keys(bias_words[d])[i];
   }
 
   pc.createAxes = function () {
+    console.log("CREATE-AXES");
     if (g) pc.removeAxes();
 
     // Add a group element for each dimension.
+    console.log("DIMS", pc.svg
+    .selectAll(".dimension"));
     g = pc.svg
       .selectAll(".dimension")
       .data(pc.getOrderedDimensionKeys(), function (d) {
@@ -968,6 +1009,9 @@ d3v3.parcoords = function (config) {
       .attr("class", "axis")
       .attr("transform", "translate(0,0)")
       .each(function (d) {
+        if (d=="type") {
+          return;
+        }
         var axisElement = d3
           .select(this)
           .call(pc.applyAxisConfig(axis, __.dimensions[d]));
@@ -1013,12 +1057,16 @@ d3v3.parcoords = function (config) {
       })
       .text(function (d) {
         d = d.toLowerCase();
-        if (d == "word") {
+        if (d == "word" || d=="type") {
           return;
         }
         //console.log(d);
         //console.log(bias_words);
         //console.log(bias_words[d]);
+        console.log(d);
+        if (d=="type") {
+          return;
+        }
         return Object.keys(bias_words[d])[0];
       });
 
@@ -1037,7 +1085,7 @@ d3v3.parcoords = function (config) {
       })
       .text(function (d) {
         d = d.toLowerCase();
-        if (d == "word") {
+        if (d == "word"|| d=="type") {
           return;
         }
         return Object.keys(bias_words[d])[1];
@@ -1078,9 +1126,14 @@ d3v3.parcoords = function (config) {
   };
 
   pc.updateAxes = function (animationTime) {
+    console.log("UPDATE-AXES");
     if (typeof animationTime === "undefined") {
       animationTime = __.animationTime;
     }
+
+    console.log("DIMS", pc.svg
+    .selectAll(".dimension"));
+
     var g_data = pc.svg
       .selectAll(".dimension")
       .data(pc.getOrderedDimensionKeys());
@@ -1144,6 +1197,9 @@ d3v3.parcoords = function (config) {
       .text(function (d) {
         //return categories[0][d]
         d = d.toLowerCase();
+        if (d=="type") {
+          return;
+        }
         return Object.keys(bias_words[d])[0];
       });
 
@@ -1163,6 +1219,9 @@ d3v3.parcoords = function (config) {
       .text(function (d) {
         //return categories[1][d]
         d = d.toLowerCase();
+        if (d=="type") {
+          return;
+        }
         return Object.keys(bias_words[d])[1];
       });
 
@@ -1217,6 +1276,7 @@ d3v3.parcoords = function (config) {
 
     // n=0
     g = pc.svg.selectAll(".dimension");
+    console.log(g);
     g.transition()
       .duration(animationTime)
       .attr("transform", function (p) {
@@ -2879,6 +2939,32 @@ d3v3.parcoords = function (config) {
     return this;
   };
 
+  function dynamicFilter(arr) {
+    console.log("Original", arr);
+    let array = Object.keys(arr);
+    console.log("Original keys", array);
+    const index = array.indexOf('word');
+    if (index > -1) {
+      array.splice(index, 1);
+    }
+    console.log("Modified keys", array);
+    
+
+    requiredKeys = array;
+    const result = {};
+    for (let key of array){
+      result[key] = arr[key]
+    };
+    console.log("Modified", result);
+    return result;
+    // return arr.map((item) => {
+    //     const result = {};
+    //     requiredKeys.forEach(key => result[key] = item[key]);
+    //     console.log("Modified", result);
+    //     return result;
+    // });
+  }
+
   // highlight an array of data
   pc.highlight = function (data) {
     if (arguments.length === 0) {
@@ -2889,12 +2975,14 @@ d3v3.parcoords = function (config) {
     //highlight_axis_subgroups(__.highlighted[0])
     pc.clear("highlight");
     d3v3.selectAll([canvas.foreground, canvas.brushed]).classed("faded", true);
-    // console.log("!@HERE");
+    console.log("!@HERE____IN");
     // console.log(data.length);
-    // for (let i = 0; i < data.length; i++) {
-    //   path_highlight(data[i],i);
-    // }
-    data.forEach(path_highlight);
+    for (let i = 0; i < data.length; i++) {
+      console.log(i, dynamicFilter(data[i]));
+      path_highlight(data[i],i);
+    }
+    console.log("!@HERE___OUT");
+    // data.forEach(path_highlight);
     events.highlight.call(this, data);
     return this;
   };
@@ -2903,7 +2991,7 @@ d3v3.parcoords = function (config) {
   function highlight_axis_subgroups(word_obj) {
     console.log("2585  ", word_obj);
     for (var key in word_obj) {
-      if (key == "word") continue;
+      if (key == "word" || key == "type") continue;
       b = word_obj[key];
       axis_name = "#" + key + "_dimension";
       console.log(key, "   ", b, "    ", axis_name);
@@ -3058,7 +3146,8 @@ d3v3.renderQueue = function (func) {
     _rate = 10, // number of calls per frame
     _clear = function () {}, // clearing function
     _i = 0; // current iteration
-
+    console.log("renderQ");
+  console.log(data.length);
   var rq = function (data) {
     if (data) rq.data(data);
     rq.invalidate();

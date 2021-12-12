@@ -307,7 +307,10 @@ def get_csv():
             df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
     elif embedding=="Both (Compare)":
         df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
-        df = df.append(pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment']))
+        df["type"] = 0
+        df1 = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
+        df1["type"] = 1
+        df = df.append(df1)
         # return  df.to_json(orient='records')+ df1.to_json(orient='records')
     out = df.to_json(orient='records')
     #print("out", out)
