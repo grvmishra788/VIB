@@ -868,8 +868,8 @@ $('#seedword-form-submit').click(function () {
     let evalwords = $('#evaluation-list').val();
     let equalize = $('#equalize-list').val()
     let orth_subspace = $('#oscar-seedword-text-1').val();
-    let algorithm = $('#algorithm-selection-button').text();
-    let subspace_method = $('#subspace-selection-button').text();
+    let algorithm = 'Algorithm: Linear projection';
+    let subspace_method = 'Subspace method: Two means';
     let concept1_name = $('#concept-label-1').val();
     let concept2_name = $('#concept-label-2').val();
 
@@ -1017,8 +1017,8 @@ $('#example-selection-button').on('click', function () {
         .text((index + 1) + '. ' + example.name);
 
       dropdown_item.on('click', function () {
-        $('#algorithm-dropdown').children()[ALGO_MAP[example.algorithm]].click();
-        $('#subspace-dropdown-items').children()[SUBSPACE_MAP[example.subspace]].click();
+        //$('#algorithm-dropdown').children()[ALGO_MAP[example.algorithm]].click();
+        //$('#subspace-dropdown-items').children()[SUBSPACE_MAP[example.subspace]].click();
 
         $('#example-selection-button').text('Chosen example: ' + (index + 1) + '. ' + example.name);
 
