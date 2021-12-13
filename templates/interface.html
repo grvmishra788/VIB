@@ -45,21 +45,24 @@
                 <div id="example-dropdown" class="dropdown-menu w-100"></div>
             </div>
 
-            <div id="seedset-container">
-                <div style="text-align: center">
+            <div id="word-embedding-container" class="dropdown vert-space">
+                <div style="text-align: center;">
+                    <!--
                     <label style="padding-bottom: 0; margin-bottom: 0">
                       Word Embedding</label
                     >
-                    <select
-                      id="dropdown_embedding"
-                      class="custom-select greyed"
-                      style="width: 90%"
-                    >
-                      <option selected>Word2Vec</option>
-                      <option >Glove (wiki 300d)</option>
-                      <option >Both (Compare)</option>
-                      <!-- <option>Word2Vec debiased</option> -->
-                    </select>
+
+
+                    <button class="w-100 btn dropdown-toggle borders bg-dark-red text-light" type="button" id="embedding-selection-button"
+                    data-toggle="dropdown">
+                    Word Embedding
+                    </button>
+                                        -->
+                  <select id="dropdown_embedding" class="custom-select greyed">
+                            <option selected>Embedding: Word2Vec</option>
+                            <option >Embedding: Glove (wiki 300d)</option>
+                            <option >Embedding: Both (Compare)</option>
+                        </select>
                 </div>
 
                 <div id="input-two-col" class="input-group w-100 vert-space">

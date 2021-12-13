@@ -267,14 +267,14 @@ def load_embedding(name):
         name = "Word2Vec"
         #name = "Glove (wiki 300d)" 
     print("Embedding name: ", name)
-    if name=="Word2Vec":
+    if name=="Embedding: Word2Vec":
         language = 'en'
         model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
-    elif name=="Glove (wiki 300d)":
+    elif name=="Embedding: Glove (wiki 300d)":
         # print("Glove word embedding backend")
         language = 'en'
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove_50k.bin', binary=True) #   
-    elif name=="Both (Compare)":
+    elif name=="Embedding: Both (Compare)":
         # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
         language = 'en'
         model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
@@ -287,25 +287,25 @@ def get_csv():
     scaling = request.args.get("scaling")
     embedding = request.args.get("embedding")
     if embedding is None:
-        embedding = "Word2Vec"
+        embedding = "Embedding: Word2Vec"
 
     print("/get_csv/")
     print("Scaling: ", scaling)
     print("Embedding: ", embedding)
     # scaling = "Percentile"
-    if embedding=="Word2Vec":
+    if embedding=="Embedding: Word2Vec":
         if scaling=="Normalization":
             df = pd.read_csv("./data/word2vec_50k.csv",header=0, keep_default_na=False)
         elif scaling=="Percentile":
             df = pd.read_csv("./data/word2vec_50k_percentile.csv",header=0, keep_default_na=False)
         else:
             df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
-    elif embedding=="Glove (wiki 300d)":
+    elif embedding=="Embedding: Glove (wiki 300d)":
         if scaling=="Percentile":
             df = pd.read_csv("./data/glove_50k_percentile.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
         else:
             df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
-    elif embedding=="Both (Compare)":
+    elif embedding=="Embedding: Both (Compare)":
         df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
         df["type"] = 0
         df1 = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
