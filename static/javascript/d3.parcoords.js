@@ -448,9 +448,18 @@ d3v3.parcoords = function (config) {
   };
 
   pc.getOrderedDimensionKeys = function () {
-    return d3v3.keys(__.dimensions).sort(function (x, y) {
+    const result = d3v3.keys(__.dimensions).sort(function (x, y) {
       return d3v3.ascending(__.dimensions[x].index, __.dimensions[y].index);
     });
+
+    var newResult = [];
+    for (var i = 0; i < result.length; i++) {
+      if (result[i] != "type") {
+        newResult = newResult.concat(result[i]);
+      }
+    }
+
+    return newResult;
   };
 
   // a better "typeof" from this post: http://stackoverflow.com/questions/7390426/better-way-to-get-type-of-a-javascript-variable
@@ -986,8 +995,6 @@ d3v3.parcoords = function (config) {
     if (g) pc.removeAxes();
 
     // Add a group element for each dimension.
-    console.log("DIMS", pc.svg
-    .selectAll(".dimension"));
     g = pc.svg
       .selectAll(".dimension")
       .data(pc.getOrderedDimensionKeys(), function (d) {
@@ -1060,10 +1067,6 @@ d3v3.parcoords = function (config) {
         if (d == "word" || d=="type") {
           return;
         }
-        //console.log(d);
-        //console.log(bias_words);
-        //console.log(bias_words[d]);
-        console.log(d);
         if (d=="type") {
           return;
         }
