@@ -8,7 +8,7 @@ function svg_setup() {
   let svg = d3.select('#animation-scatter');
   let svg_dim = Math.min(container_dims.width, container_dims.height);
   svg.attr('width', container_dims.width)
-    .attr('height', 0.5 * container_dims.height)
+    .attr('height', 0.55 * container_dims.height)
 }
 
 svg_setup()
@@ -1155,7 +1155,10 @@ function set_tour_data() {
   $('#control-panel').attr('data-intro', 'Control Panel');
   set_step('#control-panel', 'right');
 
-  $('#visualization-panel').attr('data-intro', 'Embedding View');
+  $('#visualization-panel-1').attr('data-intro', 'Scatter Plot View');
+  set_step('#visualization-panel-1', 'right');
+
+  $('#visualization-panel').attr('data-intro', 'Parallel Coordinates View');
   set_step('#visualization-panel', 'left');
 
   $('#algo-subspace').attr('data-intro', 'Select debiasing algorithm and subspace computation method');
