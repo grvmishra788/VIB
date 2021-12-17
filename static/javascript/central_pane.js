@@ -34,29 +34,6 @@ function createParallelCoord(data) {
 //________________________________________________________FROM HERE_________//
 // This code was originally in  left_pane.js
 
-// function updateProgressBar(selected) {
-//   // r = (selected.length / data.length) * 100;
-//   $("#progressbar")
-//     .css("width", r + "%")
-//     .attr("aria-valuenow", r);
-//   if (selected.length > 1000)
-//     $("#progress_value").html(
-//       "Selected Words: " +
-//         (selected.length / 1000).toFixed(0) +
-//         "K/" +
-//         (data.length / 1000).toFixed(0) +
-//         "K"
-//     );
-//   else
-//     $("#progress_value").html(
-//       "Selected Words: " +
-//         selected.length.toFixed(0) +
-//         "/" +
-//         (data.length / 1000).toFixed(0) +
-//         "K"
-//     );
-// }
-
 function load_and_plot_new_data() {
   //$("#spinner").addClass("lds-hourglass");
   $.get(
