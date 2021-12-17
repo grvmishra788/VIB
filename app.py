@@ -274,7 +274,7 @@ def load_embedding(name):
         # print("Glove word embedding backend")
         language = 'en'
         model = KeyedVectors.load_word2vec_format('./data/word_embeddings/glove_50k.bin', binary=True) #   
-    elif name=="Embedding: Both (Compare)":
+    elif name=="Embedding: Both (Compare) [Blue - Word2Vec, Green - Glove]":
         # print('./data/word_embeddings/GoogleNews-vectors-negative300-hard-debiased.bin')
         language = 'en'
         model =  word2vec.KeyedVectors.load_word2vec_format('./data/word_embeddings/word2vec_50k.bin', binary=True, limit=50041) 
@@ -305,7 +305,7 @@ def get_csv():
             df = pd.read_csv("./data/glove_50k_percentile.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
         else:
             df = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
-    elif embedding=="Embedding: Both (Compare)":
+    elif embedding=="Embedding: Both (Compare) [Blue - Word2Vec, Green - Glove]":
         df = pd.read_csv("./data/word2vec_50k_raw.csv",header=0, keep_default_na=False)
         df["type"] = 0
         df1 = pd.read_csv("./data/glove_50k.csv",header=0, keep_default_na=False).drop(columns=['sentiment'])
