@@ -1,9 +1,4 @@
-# VERB - Visualizing Embedding Representation for deBiasing
-
-### References
-VERB: Visualizing and Interpreting Bias Mitigation Techniques for Word Representations
-Archit Rathore, Sunipa Dev, Jeff M. Phillips, Vivek Srikumar, Yan Zheng, Chin-Chia Michael Yeh, Junpeng Wang, Wei Zhang, Bei Wang.
-arXiv preprint arXiv:2104.02797, 2021.
+# VIB - Visualizing and Interpreting Bias 
 
 ### Requirements
 Python 3.6+, pip
@@ -17,44 +12,41 @@ sklearn
 scipy
 numpy
 tqdm
+gensim
 ```
 
 To install these libraries using pip, use the following command in the terminal:
 ```
-pip3 install flask scikit-learn scipy numpy pandas tqdm
+pip3 install flask scikit-learn scipy numpy pandas tqdm gensim
 ```
 
 To install these packages only for current user (or if you do not write access to the python installation on the machine):
 ```
-pip3 install flask scikit-learn scipy numpy pandas tqdm --user
+pip3 install flask scikit-learn scipy numpy pandas tqdm gensim --user
 ```
 
 Alternately, you can also use conda to install the packages:
 ```
-conda install flask scikit-learn scipy numpy pandas tqdm
+conda install flask scikit-learn scipy numpy pandas tqdm gensim
 ```
 
+### Dataset
+You need to download the dataset from [https://drive.google.com/drive/folders/1ni_1yWWC4n6c6dTvauOPhV8aPbHRMLlK](https://drive.google.com/drive/folders/1ni_1yWWC4n6c6dTvauOPhV8aPbHRMLlK) and replace the contents of the dummy `data` folder present here from the contents of `data` folder present in the above google drive link.
+
 ### Installation
-Clone this repository to your local machine, make sure the requirement are installed. 
+Clone this repository to your local machine, make sure the requirements are installed on your machine. Then update the contents of the `data` folder 
 Then navigate to the cloned repository and in the base directory, type the following
 command in the terminal.
 ```shell script
-git clone https://github.com/tdavislab/verb.git
-cd verb
+git clone https://github.com/grvmishra788/VIB.git
+# Update contents o `data` folder
+cd VIB
 python3 -m flask run
 ```
 
 Once the command above is running, open your web browser (Chrome and Firefox supported) and navigate to: 
 http://127.0.0.1:5000/ (or equivalently to: http://localhost:5000)
 
-### Using larger word vector embeddings
-The project defaults to using GLoVe embeddings of 50 dimensions trained on the Wikipedia 2014 + Gigaword 5 corpus. 
-We also provide preprocessed data for the GLoVe embeddings from Common Crawl corpus - [download the 
-preprocessed](https://drive.google.com/file/d/1u8kemdX9-BsdyNP9uCZQHFuw6n_SJtC0/view?usp=sharing) file here, 
-copy it to the data folder, and rename it to `embedding.pkl` to load this data instead.
-
-You can also create your own dataset by changing `datapath` variable in the `__main__` method of `vectors.py` to your own
-trained vectors in the GLoVe format.  
 
 ### Common installation issues and fixes
 
@@ -66,7 +58,6 @@ Error: Could not locate a Flask application. You did not provide the
 "FLASK_APP" environment variable, and a "wsgi.py" or "app.py" module
 was not found in the current directory
 ```
-
 
 #### Python version
 The tool is written with Python 3.6+ support, and may/may not work with earlier versions of Python3.x. 
@@ -81,4 +72,3 @@ We have tested the tool on Firefox and Chrome. There are known issues of point l
 #### I get the following error: "Something went wrong! Could not find the key 'xxxx'
 This error means that one of the words (denoted by 'xxxx' above) in your provided word set was not found the 
 vocabulary of the word vector embedding. Check the spelling, or use another common word instead. 
-
